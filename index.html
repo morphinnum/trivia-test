@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Animal Tail! Quiz</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100;300;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+    <container class="main">
+        <div class="wrapper">
+        </div>
+    </container>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
+    integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="quizz.json"></script>
+
+<script>
+    $(document).ready(function () {
+
+        var quizContent = function (quiz, data) {
+            for (const key in quiz) {
+                let progress = quiz[key].progress;
+                let options = quiz[key].options;
+                let answer = quiz[key].answer;
+                let imgs = quiz[key].img;
+                let fact = quiz[key].fact;
+
+                let facts = `
+                        <div class="quiz_facts">
+                            <span class="quiz_facts__icon">
+                                <svg aria-hidden="true" class="rmd-icon rmd-icon--svg eb-z4RCtv mr-4" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"></path></svg>
+                            </span>
+                            <p class="quiz_facts__text">` + fact + `</p>
+                        </div>`;
+
+                let picture = `
+                        <div class="quiz_picture"> 
+                            <picture class="cropped">
+                                <source srcset="` + imgs["cropped"]["webp"] + `" type="image/webp">
+                                <img class="quiz_picture_img" src="` + imgs["cropped"]["jpg"] + `" alt="tail1crop">
+                            </picture> 
+                            <picture class="full">
+                                <source srcset="` + imgs["full"]["webp"] + `" type="image/webp">
+                                <img class="quiz_picture_img" src="` + imgs["full"]["jpg"] + `" alt="tail1crop">
+                            </picture>
+                        </div>`;
+
+                let innerContent = '<h1 class="quiz_title">' + data.title + '</h1>'
+                    + picture
+                    + getQuizOptions(options)
+                    + '<button class="quiz_next">Next!</button>';
+                        // console.log(indexOf(quiz))
+                let slide = '<div class="quiz_container">'
+                    + '<div class="quiz_progress">'
+                    + (Number(key)+1) + ' of ' + quiz.length
+                    + '<div class="quiz_progress__bar"><span class="line"></div>'
+                    + '</div>'
+                    + '<div class="quiz_inner">'
+                    + innerContent
+                    + '</div>'
+                    + facts
+                    + '</div>';
+                $('.wrapper').append(slide);
+            }
+        }
+
+        let getQuizOptions = function (options) {
+            let optionsItems = [];
+            for (const key in options) {
+                optionsItems.push('<p class="quiz_option">' + options[key] + '</p>');
+            }
+            return '<div class="quiz_options">' + optionsItems.join("") + '</div>'
+        }
+
+
+        fetch('quizz.json')
+            .then(response => response.json())
+            .then(data => {
+                let quiz = data["quiz"];
+
+                quizContent(quiz, data);
+
+                let startSlide = '<div class="quiz_container start">'
+                    + '<div class="quiz_inner">'
+                    + '<h1 class="quiz_title">' + data.title + '</h1>'
+                    + '<button class="quiz_next show">Begin!</button>'
+                    + '</div>'
+                    + '</div>';
+
+                $('.wrapper').prepend(startSlide);
+
+                let quizContainers = $('.quiz_container');
+
+                quizContainers.first().addClass('show');
+
+                var solvedCounter = 0;
+
+                quizContainers.each(function (i, el) {
+                    let currentSlide = $(this);
+                    let nextSlide = currentSlide.next();
+                    let options = currentSlide.find('.quiz_option');
+                    let next = currentSlide.find('.quiz_next');
+
+                    let revealAll = function () {
+                        options.addClass('disabled');
+                        $('.quiz_next').addClass('show');
+                        $('.cropped').addClass('hide');
+                        $('.full').addClass('show');
+                        $('.quiz_facts').addClass('show');
+                    }
+
+                    let hideAll = function () {
+                        currentSlide.removeClass('show');
+                        $('.quiz_next').removeClass('show');
+                        $('.quiz_facts').removeClass('show');
+                        $('.cropped').removeClass('hide');
+                        $('.full').removeClass('show');
+                        nextSlide.addClass('show');
+                    }
+
+
+                    options.each(function (k, value) {
+                        $(this).on('click', function () {
+                            let progressBar = 0;
+                            let increment = 100/quiz.length;
+                            progressBar = i * increment;
+                            $('.quiz_progress__bar .line').css('width', progressBar + '%')
+                            if (quiz[i - 1].answer == value.innerHTML) {
+                                revealAll();
+                                $(this).removeClass('disabled').addClass('green');
+                                solvedCounter++;
+                            } else {
+                                revealAll();
+                                $(this).removeClass('disabled').addClass('red');
+                            }
+                        })
+                    });
+
+
+                    next.on('click', function () {
+                        hideAll();
+                    })
+
+                });
+
+                quizContainers.last().find('.quiz_next').on('click', function () {
+                    $('.wrapper').append(endSlideContent(data, solvedCounter));
+                });
+
+                let endSlideContent = function (data, solved) {
+                    return '<div class="quiz_container results show">'
+                        + '<div class="quiz_inner">'
+                        + '<h1 class="quiz_title">' + data.title + '</h1>'
+                        + '<p class="quiz_results">Congrats! You solved ' + solved + ' out of ' + data["quiz"].length + '</p>'
+                        + '<p class="quiz_results">Correct ' + solved + '</p>'
+                        + '<p class="quiz_results">Incorrect ' + (data["quiz"].length - solved) + '</p>'
+                        + '<button onClick="window.location.reload();" class="quiz_next again">Start again!</button>'
+                        + '</div>'
+                        + '</div>';
+                }
+
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+
+</html>

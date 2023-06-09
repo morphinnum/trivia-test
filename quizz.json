@@ -13,7 +13,7 @@
                     "webp": "images/tail-1.webp"
                 }
             },
-            "answer": "beaver",
+            "answer": 2,
             "fact": "A beaver's tail can measure up to 18 inches long and 5 inches wide. Beavers slap their tail on the surface of water to alert others to danger in the area."
         },
         
@@ -29,7 +29,7 @@
                     "webp": "images/tail-2.webp"
                 }
             },
-            "answer": "scorpion",
+            "answer": 1,
             "fact": "Scorpions have a curved, segmented tail with a venomous stinger. Of the roughly 1,500 species of scorpions, only 25 have venom potent enough to be considered dangerous to humans."
         },
         
@@ -45,7 +45,7 @@
                     "webp": "images/tail-3.webp"
                 }
             },
-            "answer": "squirrel",
+            "answer": 2,
             "fact": "The tails of squirrels are so prominent that the animals are named for them. The word squirrel comes from the Greek skiouros, meaning “shade tail.”"
         },
         
@@ -61,7 +61,7 @@
                     "webp": "images/tail-4.webp"
                 }
             },
-            "answer": "rabbit",
+            "answer": 1,
             "fact": "Although rabbit tails frequently look like a small puff of fur, they contain 15 or 16 tiny bones."
         },
         
@@ -77,7 +77,7 @@
                     "webp": "images/tail-5.webp"
                 }
             },
-            "answer": "manatee",
+            "answer": 3,
             "fact": "The flat, rounded tail of the manatee propels it forward in water. Manatees usually swim at about five miles per hour but can reach up to three times that speed if necessary."
         }
     ]   

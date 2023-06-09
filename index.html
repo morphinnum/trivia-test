@@ -136,7 +136,7 @@
                             let increment = 100/quiz.length;
                             progressBar = i * increment;
                             $('.quiz_progress__bar .line').css('width', progressBar + '%')
-                            if (quiz[i - 1].answer == value.innerHTML) {
+                            if (quiz[i - 1].answer == k) {
                                 revealAll();
                                 $(this).removeClass('disabled').addClass('green');
                                 solvedCounter++;
@@ -155,7 +155,7 @@
                 });
 
                 quizContainers.last().find('.quiz_next').on('click', function () {
-                    $('.wrapper').append(endSlideContent(data, solvedCounter));
+                    $('.wrapper').addClass('full').append(endSlideContent(data, solvedCounter));
                 });
 
                 let endSlideContent = function (data, solved) {

@@ -47,9 +47,12 @@ html, body {
 
 .wrapper {
     width: 100%;
-    height: 100%;
     padding:  var(--wrapper-p);
     background-image: radial-gradient(circle, #74c5d6, #7ad0cb, #92d9bb, #b5dfab, #dce1a1);
+
+    @media screen and (min-width: 1024px) {
+        height: 100%;
+    }
 }
 
 .quiz {

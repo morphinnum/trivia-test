@@ -7,175 +7,180 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guess the Animal Tail! Quiz</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100;300;500&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
 <body>
     <container class="main">
-        <div class="wrapper">
+        <div class="wrapper full">
+            <div class="quiz_container start-slide show">
+               <div class="quiz_inner">
+                    <h1 class="quiz_title">Guess the Animal Tail! Quiz</h1>
+                    <button class="quiz_next show">Begin!</button>
+                </div>
+            </div>
+            <div class="quiz_container question-slide">
+                <div class="quiz_progress">
+                    <p id="quiz-number"></p>
+                    <div class="quiz_progress__bar">
+                        <span class="line"></span>
+                    </div>
+                </div>
+                <div class="quiz_inner">
+                    <h1 class="quiz_title">Guess the Animal Tail! Quiz</h1>
+                    <div class="quiz_picture"> 
+                        <img id="img-cropped" class="quiz_picture_img cropped" src="" width="400" height="300" decoding="async">
+                        <img id="img-full" class="quiz_picture_img full" src="" width="400" height="300" decoding="async">
+                    </div>
+                    <div id="quiz-options" class="quiz_options">
+                    </div>
+                    <button class="quiz_next">Next!</button>
+                </div>
+                <div class="quiz_facts">
+                    <p class="quiz_facts__text"></p>
+                </div>
+            </div>
+            <div class="quiz_container results-slide">
+                <div class="quiz_inner">
+                    <h1 class="quiz_title">Guess the Animal Tail! Quiz</h1>
+                    <p class="quiz_results">Congrats! You solved {{solved}} out of {{total}} </p>
+                    <p class="quiz_results">Correct {{solved}}</p>
+                    <p class="quiz_results">Incorrect {{result}}</p>
+                    <button onClick="window.location.reload();" class="quiz_next again">Start again!</button>
+                </div>
+            </div>
         </div>
     </container>
 </body>
 
-<script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
-    integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="quizz.json"></script>
 
 <script>
-    $(document).ready(function () {
-
-        var quizContent = function (quiz, data) {
-            for (const key in quiz) {
-                let progress = quiz[key].progress;
-                let options = quiz[key].options;
-                let answer = quiz[key].answer;
-                let imgs = quiz[key].img;
-                let fact = quiz[key].fact;
-
-                let facts = `
-                        <div class="quiz_facts">
-                            <span class="quiz_facts__icon">
-                                <svg aria-hidden="true" class="rmd-icon rmd-icon--svg eb-z4RCtv mr-4" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"></path></svg>
-                            </span>
-                            <p class="quiz_facts__text">` + fact + `</p>
-                        </div>`;
-
-                let picture = `
-                        <div class="quiz_picture"> 
-                            <picture class="cropped">
-                                <source srcset="` + imgs["cropped"]["webp"] + `" type="image/webp">
-                                <img class="quiz_picture_img" src="` + imgs["cropped"]["jpg"] + `" alt="tail1crop">
-                            </picture> 
-                            <picture class="full">
-                                <source srcset="` + imgs["full"]["webp"] + `" type="image/webp">
-                                <img class="quiz_picture_img" src="` + imgs["full"]["jpg"] + `" alt="tail1crop">
-                            </picture>
-                        </div>`;
-
-                let innerContent = '<h1 class="quiz_title">' + data.title + '</h1>'
-                    + picture
-                    + getQuizOptions(options)
-                    + '<button class="quiz_next">Next!</button>';
-                let slide = '<div class="quiz_container">'
-                    + '<div class="quiz_progress">'
-                    + (Number(key)+1) + ' of ' + quiz.length
-                    + '<div class="quiz_progress__bar"><span class="line"></div>'
-                    + '</div>'
-                    + '<div class="quiz_inner">'
-                    + innerContent
-                    + '</div>'
-                    + facts
-                    + '</div>';
-                $('.wrapper').append(slide);
-            }
-        }
-
-        let getQuizOptions = function (options) {
-            let optionsItems = [];
-            for (const key in options) {
-                optionsItems.push('<p class="quiz_option">' + options[key] + '</p>');
-            }
-            return '<div class="quiz_options">' + optionsItems.join("") + '</div>'
-        }
-
-
+    (function(){
         fetch('quizz.json')
             .then(response => response.json())
             .then(data => {
                 let quiz = data["quiz"];
 
-                quizContent(quiz, data);
+                let startSlide = document.querySelector('.start-slide');
+                let questionSlide = document.querySelector('.question-slide');
+                let resultSlide = document.querySelector('.results-slide');
 
-                let startSlide = '<div class="quiz_container start">'
-                    + '<div class="quiz_inner">'
-                    + '<h1 class="quiz_title">' + data.title + '</h1>'
-                    + '<button class="quiz_next show">Begin!</button>'
-                    + '</div>'
-                    + '</div>';
+                let quizCount = document.getElementById('quiz-number');
+                let pictureCrop = document.getElementById('img-cropped');
+                let pictureFull = document.getElementById('img-full');
+                let optionsElements = questionSlide.getElementsByClassName('quiz_option');
+                let factsContainer = document.querySelector('.quiz_facts');
+                let facts = document.querySelector('.quiz_facts__text'); 
+                let nextBtn = questionSlide.querySelector('.quiz_next');
 
-                $('.wrapper').addClass('full').prepend(startSlide);
+                let solvedCounter = 0;
+                let questionPage = 0;
 
-                let quizContainers = $('.quiz_container');
-
-                quizContainers.first().addClass('show');
-
-                var solvedCounter = 0;
-
-                quizContainers.each(function (i, el) {
-                    let currentSlide = $(this);
-                    let nextSlide = currentSlide.next();
-                    let options = currentSlide.find('.quiz_option');
-                    let next = currentSlide.find('.quiz_next');
-
-                    let revealAll = function () {
-                        options.addClass('disabled');
-                        $('.quiz_next').addClass('show');
-                        $('.cropped').addClass('hide');
-                        $('.full').addClass('show');
-                        $('.quiz_facts').addClass('show');
-                    }
-
-                    let hideAll = function () {
-                        $('.wrapper').removeClass('full');
-                        currentSlide.removeClass('show');
-                        $('.quiz_next').removeClass('show');
-                        $('.quiz_facts').removeClass('show');
-                        $('.cropped').removeClass('hide');
-                        $('.full').removeClass('show');
-                        nextSlide.addClass('show');
-                    }
-
-
-                    options.each(function (k, value) {
-                        $(this).on('click', function () {
-                            let progressBar = 0;
-                            let increment = 100/quiz.length;
-                            progressBar = i * increment;
-                            $('.quiz_progress__bar .line').css('width', progressBar + '%')
-                            if (quiz[i - 1].answer == k) {
-                                revealAll();
-                                $(this).removeClass('disabled').addClass('green');
-                                solvedCounter++;
-                            } else {
-                                revealAll();
-                                $(this).removeClass('disabled').addClass('red');
-                            }
-                        })
-                    });
-
-
-                    next.on('click', function () {
-                        hideAll();
-                    })
-
+                let quizResultsState = {
+                    solved: solvedCounter,
+                    total: quiz.length,
+                    result: (quiz.length - solvedCounter)
+                };
+                    
+                let toggleClass = ((elem, classname) => {
+                    elem.classList.toggle(classname);
+                });
+                
+                let incrementProgressBar = (pageNumber => {
+                    let progressBar = 0;
+                    let increment = 100/quiz.length;
+                    progressBar = (pageNumber+1) * increment;
+                    document.querySelector('.quiz_progress__bar .line').style.width = progressBar + '%';
                 });
 
-                quizContainers.last().find('.quiz_next').on('click', function () {
-                    $('.wrapper').addClass('full').append(endSlideContent(data, solvedCounter));
+                let getQuizOptions = (options => {
+                    let optionsItems = [];
+                    let optionsContainer = document.getElementById('quiz-options');
+
+                    for (const key in options) {
+                        optionsItems.push('<p class="quiz_option">' + options[key] + '</p>');
+                    }
+                    return optionsContainer.innerHTML = optionsItems.join("")
                 });
 
-                let endSlideContent = function (data, solved) {
-                    return '<div class="quiz_container results show">'
-                        + '<div class="quiz_inner">'
-                        + '<h1 class="quiz_title">' + data.title + '</h1>'
-                        + '<p class="quiz_results">Congrats! You solved ' + solved + ' out of ' + data["quiz"].length + '</p>'
-                        + '<p class="quiz_results">Correct ' + solved + '</p>'
-                        + '<p class="quiz_results">Incorrect ' + (data["quiz"].length - solved) + '</p>'
-                        + '<button onClick="window.location.reload();" class="quiz_next again">Start again!</button>'
-                        + '</div>'
-                        + '</div>';
+                let disableOptions = () => {
+                    Object.values(optionsElements).forEach(el => el.classList.add('disabled'));
+                };
+
+                let highlightOption = ((elem, color) => {
+                    elem.classList.replace('disabled', color);
+                });
+
+                let toggleElemsVisibility = () => {
+                    toggleClass(pictureCrop, 'hide');
+                    toggleClass(pictureFull, 'show');
+                    toggleClass(factsContainer, 'show');
+                    toggleClass(nextBtn, 'show');
                 }
 
+                let fillQuizResults = ((elem,mapObj) => {
+                    var re = new RegExp(/{{solved}}|{{total}}|{{result}}/gi);
 
+                    return elem.replace(re, function(matched){
+                        return mapObj[matched.replace("{{","").replace("}}","")];
+                    });
+                });
+
+                startSlide.querySelector('.quiz_next').addEventListener('click', function(){
+                    toggleClass(startSlide, 'show');
+                    toggleClass(startSlide.parentElement, 'full');
+                    toggleClass(questionSlide, 'show');
+
+                    setSlideContent(questionPage);
+                })
+
+                let setSlideContent = ((pageNumber) => {
+                    if (pageNumber < quiz.length) {
+                       quizCount.textContent = (Number(pageNumber)+1) + ' of ' + quiz.length;
+                        pictureCrop.src = quiz[pageNumber].img["cropped"]["jpg"];
+                        pictureFull.src = quiz[pageNumber].img['full']["jpg"];
+
+                        facts.textContent = quiz[pageNumber].fact;
+                        getQuizOptions(quiz[pageNumber].options);
+
+                        Object.values(optionsElements).forEach((val, id) => {
+                            val.addEventListener('click', function(){
+                                incrementProgressBar(pageNumber);
+                                if (id == quiz[pageNumber].answer) {
+                                    disableOptions();
+                                    toggleElemsVisibility();
+                                    highlightOption(val, 'green');
+                                    quizResultsState.solved++;
+                                } else {
+                                    disableOptions();
+                                    toggleElemsVisibility();
+                                    highlightOption(val, 'red');
+                                }
+                            })
+                        }); 
+                    } else {
+                        toggleClass(questionSlide, 'show');
+                        toggleClass(resultSlide.parentElement, 'full');
+                        toggleClass(resultSlide, 'show');
+
+                        let resultText = document.getElementsByClassName('quiz_results');
+
+                        Object.values(resultText).forEach(el => {
+                            el.innerHTML = fillQuizResults(el.innerHTML, quizResultsState);
+                        });
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    toggleElemsVisibility();
+                    questionPage++;
+                    setSlideContent(questionPage);
+                });
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-    });
+    })();
 </script>
-
 </html>

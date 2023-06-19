@@ -1,5 +1,4 @@
 {
-    "title": "Guess the Animal Tail! Quiz",
     "quiz": [
         {
             "options": ["anaconda","otter","beaver","rhinoceros"],
